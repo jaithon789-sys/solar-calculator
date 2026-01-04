@@ -18,9 +18,9 @@
   <script>
     function checkPassword() {
       const pass = document.getElementById("password").value;
-      if (pass === "SOLAR123") {
-        document.getElementById("result").innerText =
-          "✅ ผ่านแล้ว (ขั้นตอนต่อไปเดี๋ยวค่อยทำ)";
+     if (pass === "SOLAR123") {
+  sessionStorage.setItem("auth", "yes");
+  window.location.href = "calculator.html";
       } else {
         document.getElementById("result").innerText =
           "❌ รหัสไม่ถูกต้อง";
