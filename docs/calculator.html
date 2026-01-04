@@ -1,0 +1,1699 @@
+
+<!DOCTYPE html>
+<html lang="th">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>ช่างเอกสายอาชีพ | คำนวณโซลาร์เซลล์ฟรี</title>
+    <style>
+        /* ===== ECO-FUTURISM DESIGN SYSTEM ===== */
+        /* Color Palette: Electric Blue + Leaf Green + Gold */
+        /* Design: Glassmorphism with transparency effects */
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        :root {
+            /* Eco-Futurism Color Palette */
+            --primary: #0066cc;           /* Electric Blue */
+            --primary-light: #0080ff;
+            --secondary: #00aa44;         /* Leaf Green */
+            --secondary-light: #00cc55;
+            --accent: #ffaa00;            /* Gold */
+            --background: #f8f9fa;
+            --foreground: #1a1a2e;
+            --card-bg: rgba(255, 255, 255, 0.6);
+            --card-border: rgba(255, 255, 255, 0.2);
+            --glass-bg: rgba(255, 255, 255, 0.5);
+            --glass-border: rgba(255, 255, 255, 0.3);
+            --text-muted: #666;
+            --border: #e0e0e0;
+            --success: #00aa44;
+            --error: #cc0000;
+        }
+
+        body.dark-mode {
+            --background: #0f1419;
+            --foreground: #f0f0f0;
+            --card-bg: rgba(20, 30, 50, 0.6);
+            --card-border: rgba(255, 255, 255, 0.1);
+            --glass-bg: rgba(0, 0, 0, 0.2);
+            --glass-border: rgba(255, 255, 255, 0.1);
+            --text-muted: #aaa;
+            --border: #333;
+        }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto', sans-serif;
+            background-color: var(--background);
+            color: var(--foreground);
+            transition: background-color 0.3s, color 0.3s;
+        }
+
+        /* ===== HERO SECTION ===== */
+        .hero {
+            position: relative;
+            height: 300px;
+            background: linear-gradient(135deg, #0066cc 0%, #00aa44 100%);
+            overflow: hidden;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding: 2rem;
+            color: white;
+        }
+
+        .hero::before {
+            content: '';
+            position: absolute;
+            inset: 0;
+            background: url('data:image/svg+xml,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1200 600"><defs><pattern id="grid" width="40" height="40" patternUnits="userSpaceOnUse"><path d="M 40 0 L 0 0 0 40" fill="none" stroke="rgba(255,255,255,0.1)" stroke-width="1"/></pattern></defs><rect width="1200" height="600" fill="url(%23grid)"/></svg>');
+            opacity: 0.5;
+        }
+
+        .hero-content {
+            position: relative;
+            z-index: 2;
+            max-width: 600px;
+        }
+
+        .hero h1 {
+            font-size: 2.5rem;
+            font-weight: bold;
+            margin-bottom: 0.5rem;
+            text-shadow: 0 2px 10px rgba(0, 0, 0, 0.3);
+        }
+
+        .hero p {
+            font-size: 1.1rem;
+            opacity: 0.9;
+            text-shadow: 0 1px 5px rgba(0, 0, 0, 0.3);
+        }
+
+        .theme-toggle {
+            position: absolute;
+            top: 1rem;
+            right: 1rem;
+            z-index: 3;
+            background: rgba(255, 255, 255, 0.2);
+            border: 1px solid rgba(255, 255, 255, 0.3);
+            color: white;
+            padding: 0.5rem 1rem;
+            border-radius: 50px;
+            cursor: pointer;
+            font-size: 1rem;
+            transition: all 0.3s;
+        }
+
+        .theme-toggle:hover {
+            background: rgba(255, 255, 255, 0.3);
+        }
+
+        /* ===== CONTAINER & LAYOUT ===== */
+        .container {
+            max-width: 1280px;
+            margin: 0 auto;
+            padding: 2rem;
+        }
+
+        .main-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 2rem;
+            margin-top: -80px;
+            position: relative;
+            z-index: 10;
+        }
+
+        @media (max-width: 1024px) {
+            .main-grid {
+                grid-template-columns: 1fr;
+                margin-top: 2rem;
+            }
+        }
+
+        /* ===== GLASS PANEL COMPONENT ===== */
+        .glass-panel {
+            background: var(--card-bg);
+            backdrop-filter: blur(10px);
+            border: 1px solid var(--card-border);
+            border-radius: 1rem;
+            padding: 1.5rem;
+            box-shadow: 0 8px 32px rgba(0, 0, 0, 0.1);
+            transition: all 0.3s;
+        }
+
+        .glass-panel:hover {
+            box-shadow: 0 12px 40px rgba(0, 0, 0, 0.15);
+        }
+
+        .glass-input {
+            background: var(--glass-bg);
+            border: 1px solid var(--glass-border);
+            border-radius: 0.5rem;
+            padding: 0.75rem;
+            font-size: 1rem;
+            color: var(--foreground);
+            transition: all 0.3s;
+            width: 100%;
+        }
+
+        .glass-input:focus {
+            outline: none;
+            background: rgba(255, 255, 255, 0.8);
+            border-color: var(--primary);
+            box-shadow: 0 0 0 3px rgba(0, 102, 204, 0.1);
+        }
+
+        body.dark-mode .glass-input:focus {
+            background: rgba(0, 0, 0, 0.4);
+        }
+
+        /* ===== SECTION HEADERS ===== */
+        .section-header {
+            font-size: 1.25rem;
+            font-weight: 600;
+            margin-bottom: 1.5rem;
+            color: var(--primary);
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+
+        /* ===== FORM GROUPS ===== */
+        .form-group {
+            margin-bottom: 1.5rem;
+        }
+
+        .form-group label {
+            display: block;
+            font-size: 0.875rem;
+            font-weight: 500;
+            margin-bottom: 0.5rem;
+            color: var(--text-muted);
+        }
+
+        .form-row {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 1rem;
+        }
+
+        @media (max-width: 768px) {
+            .form-row {
+                grid-template-columns: 1fr;
+            }
+        }
+
+        /* ===== APPLIANCE ITEM ===== */
+        .appliance-item {
+            background: var(--glass-bg);
+            border: 1px solid var(--glass-border);
+            border-radius: 0.75rem;
+            padding: 1rem;
+            margin-bottom: 1rem;
+            display: grid;
+            grid-template-columns: 1fr 1fr 1fr 1fr auto;
+            gap: 0.75rem;
+            align-items: flex-end;
+        }
+
+        @media (max-width: 768px) {
+            .appliance-item {
+                grid-template-columns: 1fr;
+            }
+        }
+
+        .appliance-field {
+            display: flex;
+            flex-direction: column;
+        }
+
+        .appliance-field label {
+            font-size: 0.75rem;
+            font-weight: 600;
+            margin-bottom: 0.25rem;
+            color: var(--text-muted);
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+
+        .appliance-field input {
+            padding: 0.5rem;
+            border: 1px solid var(--glass-border);
+            border-radius: 0.375rem;
+            background: var(--glass-bg);
+            color: var(--foreground);
+            font-size: 0.875rem;
+        }
+
+        .unit-label {
+            position: absolute;
+            right: 0.5rem;
+            top: 50%;
+            transform: translateY(-50%);
+            font-size: 0.75rem;
+            color: var(--text-muted);
+            pointer-events: none;
+        }
+
+        .appliance-field {
+            position: relative;
+        }
+
+        /* ===== BUTTONS ===== */
+        button {
+            font-family: inherit;
+            cursor: pointer;
+            border: none;
+            border-radius: 0.5rem;
+            padding: 0.75rem 1.5rem;
+            font-size: 1rem;
+            font-weight: 500;
+            transition: all 0.3s;
+        }
+
+        .btn-primary {
+            background: var(--primary);
+            color: white;
+            box-shadow: 0 4px 12px rgba(0, 102, 204, 0.3);
+        }
+
+        .btn-primary:hover {
+            background: var(--primary-light);
+            box-shadow: 0 6px 16px rgba(0, 102, 204, 0.4);
+        }
+
+        .btn-secondary {
+            background: var(--secondary);
+            color: white;
+            box-shadow: 0 4px 12px rgba(0, 170, 68, 0.3);
+        }
+
+        .btn-secondary:hover {
+            background: var(--secondary-light);
+            box-shadow: 0 6px 16px rgba(0, 170, 68, 0.4);
+        }
+
+        .btn-small {
+            padding: 0.5rem 1rem;
+            font-size: 0.875rem;
+        }
+
+        .btn-icon {
+            padding: 0.5rem;
+            width: 2.5rem;
+            height: 2.5rem;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            background: rgba(204, 0, 0, 0.1);
+            color: var(--error);
+        }
+
+        .btn-icon:hover {
+            background: rgba(204, 0, 0, 0.2);
+        }
+
+        /* ===== SELECT DROPDOWN ===== */
+        select {
+            width: 100%;
+            padding: 0.75rem;
+            border: 1px solid var(--glass-border);
+            border-radius: 0.5rem;
+            background: var(--glass-bg);
+            color: var(--foreground);
+            font-size: 1rem;
+            cursor: pointer;
+            transition: all 0.3s;
+        }
+
+        select:focus {
+            outline: none;
+            border-color: var(--primary);
+            box-shadow: 0 0 0 3px rgba(0, 102, 204, 0.1);
+        }
+
+        /* ===== RESULT CARDS ===== */
+        .result-section {
+            position: sticky;
+            top: 2rem;
+        }
+
+        .result-tabs {
+            display: flex;
+            gap: 0.5rem;
+            margin-bottom: 1.5rem;
+            background: var(--glass-bg);
+            padding: 0.25rem;
+            border-radius: 0.75rem;
+            border: 1px solid var(--glass-border);
+        }
+
+        .result-tab {
+            flex: 1;
+            padding: 0.75rem 1rem;
+            background: transparent;
+            border: none;
+            border-radius: 0.5rem;
+            cursor: pointer;
+            font-weight: 500;
+            transition: all 0.3s;
+            color: var(--text-muted);
+        }
+
+        .result-tab.active {
+            background: var(--primary);
+            color: white;
+        }
+
+        .result-tab:nth-child(2).active {
+            background: var(--secondary);
+        }
+
+        /* ===== SUMMARY CARDS ===== */
+        .summary-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 1rem;
+            margin-bottom: 1.5rem;
+        }
+
+        .summary-card {
+            background: var(--glass-bg);
+            border: 1px solid var(--glass-border);
+            border-radius: 0.75rem;
+            padding: 1.5rem;
+            text-align: center;
+        }
+
+        .summary-card.primary {
+            border-color: rgba(0, 102, 204, 0.3);
+            background: rgba(0, 102, 204, 0.05);
+        }
+
+        .summary-card.secondary {
+            border-color: rgba(0, 170, 68, 0.3);
+            background: rgba(0, 170, 68, 0.05);
+        }
+
+        .summary-icon {
+            font-size: 2rem;
+            margin-bottom: 0.5rem;
+        }
+
+        .summary-value {
+            font-size: 1.75rem;
+            font-weight: bold;
+            color: var(--primary);
+            margin-bottom: 0.25rem;
+        }
+
+        .summary-card.secondary .summary-value {
+            color: var(--secondary);
+        }
+
+        .summary-unit {
+            font-size: 0.75rem;
+            color: var(--text-muted);
+            margin-bottom: 0.5rem;
+        }
+
+        .summary-label {
+            font-size: 0.875rem;
+            font-weight: 500;
+        }
+
+        /* ===== RESULT DETAILS ===== */
+        .result-card {
+            background: var(--card-bg);
+            border: 1px solid var(--card-border);
+            border-radius: 1rem;
+            padding: 1.5rem;
+            margin-bottom: 1.5rem;
+        }
+
+        .result-card.primary {
+            border-color: rgba(0, 102, 204, 0.3);
+        }
+
+        .result-card.secondary {
+            border-color: rgba(0, 170, 68, 0.3);
+        }
+
+        .result-title {
+            font-size: 1.1rem;
+            font-weight: 600;
+            margin-bottom: 1rem;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            color: var(--primary);
+        }
+
+        .result-card.secondary .result-title {
+            color: var(--secondary);
+        }
+
+        .result-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 1rem;
+            margin-bottom: 1rem;
+        }
+
+        .result-item {
+            background: var(--glass-bg);
+            border-radius: 0.5rem;
+            padding: 1rem;
+        }
+
+        .result-item-label {
+            font-size: 0.75rem;
+            color: var(--text-muted);
+            margin-bottom: 0.5rem;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+
+        .result-item-value {
+            font-size: 1.5rem;
+            font-weight: bold;
+            color: var(--foreground);
+        }
+
+        .result-row {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 0.75rem 0;
+            border-bottom: 1px solid var(--border);
+        }
+
+        .result-row:last-child {
+            border-bottom: none;
+        }
+
+        .result-row-label {
+            font-size: 0.875rem;
+            color: var(--text-muted);
+        }
+
+        .result-row-value {
+            font-weight: 600;
+            font-family: 'Courier New', monospace;
+        }
+
+        .result-row-value.highlight {
+            color: var(--success);
+        }
+
+        .result-row-value.highlight.blue {
+            color: var(--primary);
+        }
+
+        /* ===== COST BREAKDOWN ===== */
+        .cost-breakdown {
+            margin-top: 1rem;
+            padding-top: 1rem;
+            border-top: 1px solid var(--border);
+        }
+
+        .breakdown-item {
+            display: flex;
+            justify-content: space-between;
+            padding: 0.5rem 0;
+            font-size: 0.875rem;
+        }
+
+        .breakdown-item.total {
+            font-weight: bold;
+            font-size: 1rem;
+            padding-top: 0.75rem;
+            border-top: 1px solid var(--border);
+            margin-top: 0.75rem;
+        }
+
+        .breakdown-label {
+            color: var(--text-muted);
+        }
+
+        .breakdown-value {
+            font-family: 'Courier New', monospace;
+            text-align: right;
+        }
+
+        /* ===== COLLAPSIBLE ===== */
+        .collapsible {
+            width: 100%;
+            text-align: left;
+            padding: 1rem;
+            background: var(--glass-bg);
+            border: 1px solid var(--glass-border);
+            border-radius: 0.5rem;
+            cursor: pointer;
+            font-weight: 500;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            transition: all 0.3s;
+        }
+
+        .collapsible:hover {
+            background: rgba(0, 102, 204, 0.1);
+        }
+
+        .collapsible.active {
+            background: rgba(0, 102, 204, 0.1);
+            border-color: var(--primary);
+        }
+
+        .collapsible-content {
+            display: none;
+            padding: 1rem;
+            background: var(--glass-bg);
+            border-left: 2px solid var(--primary);
+            margin-top: 0.5rem;
+        }
+
+        .collapsible-content.active {
+            display: block;
+        }
+
+        .chevron {
+            transition: transform 0.3s;
+            font-size: 1.2rem;
+        }
+
+        .collapsible.active .chevron {
+            transform: rotate(180deg);
+        }
+
+        /* ===== ACTION BUTTONS ===== */
+        .action-buttons {
+            display: flex;
+            gap: 1rem;
+            margin-bottom: 1.5rem;
+        }
+
+        .action-buttons button {
+            flex: 1;
+            padding: 0.75rem;
+            font-size: 0.875rem;
+        }
+
+        @media (max-width: 768px) {
+            .action-buttons {
+                flex-direction: column;
+            }
+        }
+
+        /* ===== FOOTER ===== */
+        .footer {
+            text-align: center;
+            padding: 2rem;
+            color: var(--text-muted);
+            font-size: 0.875rem;
+            border-top: 1px solid var(--border);
+            margin-top: 2rem;
+        }
+
+        .footer a {
+            color: var(--primary);
+            text-decoration: none;
+            transition: all 0.3s;
+        }
+
+        .footer a:hover {
+            text-decoration: underline;
+        }
+
+        /* ===== EMPTY STATE ===== */
+        .empty-state {
+            text-align: center;
+            padding: 3rem 2rem;
+            color: var(--text-muted);
+        }
+
+        .empty-state-icon {
+            font-size: 3rem;
+            margin-bottom: 1rem;
+            opacity: 0.3;
+        }
+
+        .empty-state p {
+            margin: 0.5rem 0;
+        }
+
+        /* ===== ANIMATION ===== */
+        @keyframes slideIn {
+            from {
+                opacity: 0;
+                transform: translateY(20px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        .animate-in {
+            animation: slideIn 0.3s ease-out;
+        }
+
+        /* ===== RESPONSIVE ===== */
+        @media (max-width: 768px) {
+            .hero {
+                height: 250px;
+                padding: 1rem;
+            }
+
+            .hero h1 {
+                font-size: 1.75rem;
+            }
+
+            .hero p {
+                font-size: 0.95rem;
+            }
+
+            .container {
+                padding: 1rem;
+            }
+
+            .summary-grid {
+                grid-template-columns: 1fr;
+            }
+
+            .result-grid {
+                grid-template-columns: 1fr;
+            }
+
+            .result-section {
+                position: static;
+            }
+        }
+    </style>
+</head>
+<body> 
+  <script>
+  if (sessionStorage.getItem("auth") !== "yes") {
+    window.location.href = "index.html";
+  }
+</script>
+    <!-- ===== HERO SECTION ===== -->
+    <div class="hero">
+        <div class="hero-content">
+            <h1>🔆 ช่างเอกสายอาชีพ</h1>
+            <p>เครื่องมือคำนวณโซลาร์เซลล์สำหรับบ้านและร้านค้า</p>
+        </div>
+        <button class="theme-toggle" onclick="toggleTheme()">🌙 Dark</button>
+    </div>
+
+    <!-- ===== MAIN CONTAINER ===== -->
+    <div class="container">
+        <div class="main-grid">
+            <!-- ===== LEFT COLUMN: INPUTS ===== -->
+            <div>
+                <!-- APPLIANCE FORM SECTION -->
+                <div class="glass-panel">
+                    <h2 class="section-header">⚡ 1. รายการเครื่องใช้ไฟฟ้า</h2>
+
+                    <div class="form-row">
+                        <div class="form-group">
+                            <label>เพิ่มเครื่องใช้ไฟฟ้าด่วน</label>
+                            <select id="appliancePreset" onchange="addPresetAppliance()">
+                                <option value="">เลือกเครื่องใช้ไฟฟ้า...</option>
+                                <option value="หลอดไฟ LED">หลอดไฟ LED (10W)</option>
+                                <option value="พัดลมตั้งพื้น">พัดลมตั้งพื้น (50W)</option>
+                                <option value="ทีวี LED 40-50 นิ้ว">ทีวี LED 40-50 นิ้ว (100W)</option>
+                                <option value="ตู้เย็น 5-10 คิว">ตู้เย็น 5-10 คิว (150W)</option>
+                                <option value="หม้อหุงข้าว">หม้อหุงข้าว (800W)</option>
+                                <option value="เครื่องซักผ้า">เครื่องซักผ้า (500W)</option>
+                                <option value="เตารีด">เตารีด (1000W)</option>
+                                <option value="คอมพิวเตอร์ PC">คอมพิวเตอร์ PC (200W)</option>
+                                <option value="โน้ตบุ๊ก">โน้ตบุ๊ก (60W)</option>
+                                <option value="เครื่องทำน้ำอุ่น">เครื่องทำน้ำอุ่น (3500W)</option>
+                            </select>
+                        </div>
+                        <div class="form-group">
+                            <label>เพิ่มเครื่องปรับอากาศ</label>
+                            <select id="acPreset" onchange="addAirConditioner()">
+                                <option value="">เลือกขนาด BTU...</option>
+                                <option value="3000">3000 BTU (~250W)</option>
+                                <option value="6000">6000 BTU (~500W)</option>
+                                <option value="9000">9000 BTU (~800W)</option>
+                                <option value="12000">12000 BTU (~1000W)</option>
+                                <option value="18000">18000 BTU (~1500W)</option>
+                                <option value="24000">24000 BTU (~2000W)</option>
+                            </select>
+                        </div>
+                    </div>
+
+                    <button class="btn-primary" onclick="addCustomAppliance()">+ เพิ่มเครื่องใช้ไฟฟ้าเอง</button>
+
+                    <!-- APPLIANCES LIST -->
+                    <div id="appliancesList" style="margin-top: 1.5rem;"></div>
+                </div>
+
+                <!-- SETTINGS FORM SECTION -->
+                <div class="glass-panel" style="margin-top: 2rem;">
+                    <h2 class="section-header">⚙️ 2. ตั้งค่าการคำนวณ</h2>
+
+                    <div class="form-group">
+                        <label>ค่าไฟฟ้า (บาท/kWh)</label>
+                        <input type="number" id="electricityRate" class="glass-input" value="4.5" step="0.1" min="0" onchange="updateCalculation()">
+                    </div>
+
+                    <div class="form-row">
+                        <div class="form-group">
+                            <label>Peak Sun Hours (ชม./วัน)</label>
+                            <input type="number" id="peakSunHours" class="glass-input" value="5" step="0.5" min="3" max="7" onchange="updateCalculation()">
+                            <small style="color: var(--text-muted); font-size: 0.75rem; margin-top: 0.25rem; display: block;">
+                                ⓘ ชั่วโมงแสงแดดที่มีประสิทธิภาพ (ปกติ 3-7 ชม.)
+                            </small>
+                        </div>
+                        <div class="form-group">
+                            <label>Derating Factor</label>
+                            <input type="number" id="deratingFactor" class="glass-input" value="0.8" step="0.05" min="0.6" max="1" onchange="updateCalculation()">
+                            <small style="color: var(--text-muted); font-size: 0.75rem; margin-top: 0.25rem; display: block;">
+                                ⓘ ประสิทธิภาพระบบ (0.6-1.0)
+                            </small>
+                        </div>
+                    </div>
+
+                    <div class="form-row">
+                        <div class="form-group">
+                            <label>Autonomy Days (วัน)</label>
+                            <input type="number" id="autonomyDays" class="glass-input" value="1" step="1" min="1" max="7" onchange="updateCalculation()">
+                            <small style="color: var(--text-muted); font-size: 0.75rem; margin-top: 0.25rem; display: block;">
+                                ⓘ วันสำรองสำหรับ Off-Grid (1-7 วัน)
+                            </small>
+                        </div>
+                        <div class="form-group">
+                            <label>ประเภทแบตเตอรี่</label>
+                            <select id="batteryType" class="glass-input" onchange="updateCalculation()">
+                                <option value="lifepo4">LiFePO4 (ลิเธียมฟอสเฟต)</option>
+                                <option value="lead_acid">Lead-Acid (ตะกั่วกรด)</option>
+                                <option value="lithium_ion">Lithium-Ion (ลิเธียมไอออน)</option>
+                            </select>
+                        </div>
+                    </div>
+
+                    <!-- EQUIPMENT COST SECTION -->
+                    <div style="margin-top: 2rem; padding-top: 1.5rem; border-top: 1px solid var(--border);">
+                        <h3 style="font-size: 1rem; font-weight: 600; margin-bottom: 1rem; color: var(--primary);">
+                            💰 ราคาอุปกรณ์ (บาท)
+                        </h3>
+
+                        <div class="form-row">
+                            <div class="form-group">
+                                <label>แผงโซลาร์เซลล์ (550W)</label>
+                                <input type="number" id="panelPrice" class="glass-input" value="2500" step="100" onchange="updateCalculation()">
+                            </div>
+                            <div class="form-group">
+                                <label>อินเวอร์เตอร์</label>
+                                <input type="number" id="inverterPrice" class="glass-input" value="15000" step="100" onchange="updateCalculation()">
+                            </div>
+                        </div>
+
+                        <div class="form-row">
+                            <div class="form-group">
+                                <label>แบตเตอรี่</label>
+                                <input type="number" id="batteryPrice" class="glass-input" value="55000" step="100" onchange="updateCalculation()">
+                            </div>
+                            <div class="form-group">
+                                <label>สายไฟและอุปกรณ์</label>
+                                <input type="number" id="wiringPrice" class="glass-input" value="5000" step="100" onchange="updateCalculation()">
+                            </div>
+                        </div>
+
+                        <div class="form-row">
+                            <div class="form-group">
+                                <label>ค่าติดตั้ง</label>
+                                <input type="number" id="installationPrice" class="glass-input" value="10000" step="100" onchange="updateCalculation()">
+                            </div>
+                            <div class="form-group">
+                                <label>อื่นๆ</label>
+                                <input type="number" id="otherPrice" class="glass-input" value="0" step="100" onchange="updateCalculation()">
+                            </div>
+                        </div>
+
+                        <button class="btn-secondary" onclick="resetPrices()" style="margin-top: 1rem;">↻ รีเซ็ตราคา</button>
+                    </div>
+                </div>
+            </div>
+
+            <!-- ===== RIGHT COLUMN: RESULTS ===== -->
+            <div class="result-section">
+                <!-- ACTION BUTTONS -->
+                <div class="action-buttons">
+                    <button class="btn-primary" onclick="downloadResults()">📥 ดาวน์โหลด</button>
+                    <button class="btn-secondary" onclick="copyResults()">📋 คัดลอก</button>
+                </div>
+
+                <!-- SUMMARY CARDS -->
+                <div class="summary-grid">
+                    <div class="summary-card primary">
+                        <div class="summary-icon">⚡</div>
+                        <div class="summary-value" id="totalEnergyDisplay">0</div>
+                        <div class="summary-unit">kWh / วัน</div>
+                        <div class="summary-label">การใช้ไฟรวม</div>
+                    </div>
+                    <div class="summary-card secondary">
+                        <div class="summary-icon">📊</div>
+                        <div class="summary-value" id="totalPowerDisplay">0</div>
+                        <div class="summary-unit">Watts</div>
+                        <div class="summary-label">กำลังไฟสูงสุด</div>
+                    </div>
+                </div>
+
+                <!-- RESULT TABS -->
+                <div class="result-tabs">
+                    <button class="result-tab active" onclick="switchTab('ongrid')">☀️ On-Grid</button>
+                    <button class="result-tab" onclick="switchTab('offgrid')">🔋 Off-Grid</button>
+                </div>
+
+                <!-- ON-GRID RESULTS -->
+                <div id="onGridResults" class="result-card primary">
+                    <div class="result-title">☀️ ระบบ On-Grid (เชื่อมต่อสายส่ง)</div>
+
+                    <div class="result-grid">
+                        <div class="result-item">
+                            <div class="result-item-label">ขนาดระบบ</div>
+                            <div class="result-item-value" id="onGridSize">0</div>
+                            <div style="font-size: 0.75rem; color: var(--text-muted);">kW</div>
+                        </div>
+                        <div class="result-item">
+                            <div class="result-item-label">จำนวนแผง (550W)</div>
+                            <div class="result-item-value" id="onGridPanels">0</div>
+                            <div style="font-size: 0.75rem; color: var(--text-muted);">แผง</div>
+                        </div>
+                    </div>
+
+                    <div class="result-row">
+                        <span class="result-row-label">ประหยัดค่าไฟ/เดือน</span>
+                        <span class="result-row-value highlight" id="onGridMonthlySavings">0 บาท</span>
+                    </div>
+
+                    <div class="result-row">
+                        <span class="result-row-label">จุดคุ้มทุน (ROI)</span>
+                        <span class="result-row-value highlight blue" id="onGridROI">0 ปี</span>
+                    </div>
+
+                    <div class="result-row">
+                        <span class="result-row-label" style="font-weight: 600;">💰 งบประมาณโดยประมาณ</span>
+                        <span class="result-row-value" style="font-size: 1.1rem; color: var(--primary);" id="onGridCost">0 บาท</span>
+                    </div>
+
+                    <button class="collapsible" onclick="toggleCollapsible(this)">
+                        <span>รายละเอียดค่าใช้จ่าย</span>
+                        <span class="chevron">▼</span>
+                    </button>
+                    <div class="collapsible-content" id="onGridBreakdown"></div>
+                </div>
+
+                <!-- OFF-GRID RESULTS -->
+                <div id="offGridResults" class="result-card secondary" style="display: none;">
+                    <div class="result-title">🔋 ระบบ Off-Grid (มีแบตเตอรี่)</div>
+
+                    <div class="result-grid">
+                        <div class="result-item">
+                            <div class="result-item-label">ขนาดระบบ</div>
+                            <div class="result-item-value" id="offGridSize">0</div>
+                            <div style="font-size: 0.75rem; color: var(--text-muted);">kW</div>
+                        </div>
+                        <div class="result-item">
+                            <div class="result-item-label">จำนวนแผง (550W)</div>
+                            <div class="result-item-value" id="offGridPanels">0</div>
+                            <div style="font-size: 0.75rem; color: var(--text-muted);">แผง</div>
+                        </div>
+                        <div class="result-item" style="grid-column: 1 / -1;">
+                            <div class="result-item-label">ความจุแบตเตอรี่ที่ต้องใช้</div>
+                            <div class="result-item-value" id="offGridBatteryCapacity">0</div>
+                            <div style="font-size: 0.75rem; color: var(--text-muted);">kWh (<span id="offGridBatteryCount">0</span> ลูก)</div>
+                        </div>
+                    </div>
+
+                    <div class="result-row">
+                        <span class="result-row-label" style="font-weight: 600;">💰 งบประมาณโดยประมาณ</span>
+                        <span class="result-row-value" style="font-size: 1.1rem; color: var(--secondary);" id="offGridCost">0 บาท</span>
+                    </div>
+
+                    <button class="collapsible" onclick="toggleCollapsible(this)">
+                        <span>รายละเอียดค่าใช้จ่าย</span>
+                        <span class="chevron">▼</span>
+                    </button>
+                    <div class="collapsible-content" id="offGridBreakdown"></div>
+
+                    <p style="font-size: 0.75rem; color: var(--text-muted); margin-top: 1rem;">
+                        *ราคารวมแผง, อินเวอร์เตอร์, แบตเตอรี่ และค่าติดตั้งโดยประมาณ
+                    </p>
+                </div>
+
+                <!-- EMPTY STATE -->
+                <div id="emptyState" class="empty-state">
+                    <div class="empty-state-icon">⚡</div>
+                    <p><strong>ยังไม่มีรายการเครื่องใช้ไฟฟ้า</strong></p>
+                    <p>เพิ่มรายการเพื่อเริ่มคำนวณ</p>
+                </div>
+
+                <!-- FOOTER -->
+                <div class="footer">
+                    <p>© 2025 Solar Calculator by ช่างเอกสายอาชีพ</p>
+                    <p>ผลลัพธ์เป็นการประมาณการเบื้องต้น ควรปรึกษาผู้เชี่ยวชาญก่อนติดตั้งจริง</p>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- ===== JAVASCRIPT LOGIC ===== -->
+    <script>
+        /* ========================================
+           SOLAR CALCULATOR - COMPLETE LOGIC
+           ======================================== */
+
+        // ===== CONSTANTS & CONFIGURATION =====
+        const APPLIANCES = [
+            { name: "หลอดไฟ LED", watts: 10 },
+            { name: "พัดลมตั้งพื้น", watts: 50 },
+            { name: "ทีวี LED 40-50 นิ้ว", watts: 100 },
+            { name: "ตู้เย็น 5-10 คิว", watts: 150 },
+            { name: "หม้อหุงข้าว", watts: 800 },
+            { name: "เครื่องซักผ้า", watts: 500 },
+            { name: "เตารีด", watts: 1000 },
+            { name: "คอมพิวเตอร์ PC", watts: 200 },
+            { name: "โน้ตบุ๊ก", watts: 60 },
+            { name: "เครื่องทำน้ำอุ่น", watts: 3500 },
+        ];
+
+        const AIR_CONDITIONERS = [
+            { btu: 3000, watts: 250 },
+            { btu: 6000, watts: 500 },
+            { btu: 9000, watts: 800 },
+            { btu: 12000, watts: 1000 },
+            { btu: 18000, watts: 1500 },
+            { btu: 24000, watts: 2000 },
+        ];
+
+        const BATTERY_TYPES = [
+            { id: "lifepo4", name: "LiFePO4", price: 55000, dod: 0.8, capacity: 5000 },
+            { id: "lead_acid", name: "Lead-Acid", price: 5000, dod: 0.5, capacity: 1200 },
+            { id: "lithium_ion", name: "Lithium-Ion", price: 45000, dod: 0.9, capacity: 5000 },
+        ];
+
+        const SOLAR_PANEL = { watts: 550, price: 2500 };
+
+        // ===== STATE MANAGEMENT =====
+        let appliances = [];
+        let currentTab = 'ongrid';
+
+        // ===== UTILITY FUNCTIONS =====
+
+        /**
+         * Format number to Thai locale with specified decimal places
+         * @param {number} num - Number to format
+         * @param {number} decimals - Number of decimal places
+         * @returns {string} Formatted number string
+         */
+        function formatNumber(num, decimals = 2) {
+            return new Intl.NumberFormat('th-TH', { 
+                maximumFractionDigits: decimals,
+                minimumFractionDigits: decimals 
+            }).format(num);
+        }
+
+        /**
+         * Format number as Thai currency (Baht)
+         * @param {number} num - Amount to format
+         * @returns {string} Formatted currency string
+         */
+        function formatCurrency(num) {
+            return new Intl.NumberFormat('th-TH', { 
+                style: 'currency', 
+                currency: 'THB', 
+                maximumFractionDigits: 0 
+            }).format(num);
+        }
+
+        /**
+         * Generate unique ID for appliances
+         * @returns {string} Unique identifier
+         */
+        function generateId() {
+            return 'app_' + Date.now() + '_' + Math.random().toString(36).substr(2, 9);
+        }
+
+        // ===== THEME MANAGEMENT =====
+
+        /**
+         * Toggle between light and dark theme
+         * Persists preference to localStorage
+         */
+        function toggleTheme() {
+            const isDark = document.body.classList.toggle('dark-mode');
+            localStorage.setItem('theme', isDark ? 'dark' : 'light');
+            updateThemeButton();
+        }
+
+        /**
+         * Update theme button text based on current theme
+         */
+        function updateThemeButton() {
+            const btn = document.querySelector('.theme-toggle');
+            const isDark = document.body.classList.contains('dark-mode');
+            btn.textContent = isDark ? '☀️ Light' : '🌙 Dark';
+        }
+
+        /**
+         * Initialize theme from localStorage or system preference
+         */
+        function initTheme() {
+            const saved = localStorage.getItem('theme');
+            const prefersDark = window.matchMedia('(prefers-color-scheme: dark)').matches;
+            if (saved === 'dark' || (!saved && prefersDark)) {
+                document.body.classList.add('dark-mode');
+            }
+            updateThemeButton();
+        }
+
+        // ===== APPLIANCE MANAGEMENT =====
+
+        /**
+         * Add a custom appliance to the list
+         */
+        function addCustomAppliance() {
+            appliances.push({
+                id: generateId(),
+                name: "เครื่องใช้ไฟฟ้าใหม่",
+                watts: 100,
+                quantity: 1,
+                hours: 1
+            });
+            renderAppliances();
+            updateCalculation();
+        }
+
+        /**
+         * Add preset appliance from dropdown
+         */
+        function addPresetAppliance() {
+            const select = document.getElementById('appliancePreset');
+            const name = select.value;
+            if (!name) return;
+
+            const preset = APPLIANCES.find(a => a.name === name);
+            if (preset) {
+                appliances.push({
+                    id: generateId(),
+                    name: preset.name,
+                    watts: preset.watts,
+                    quantity: 1,
+                    hours: 1
+                });
+                renderAppliances();
+                updateCalculation();
+            }
+            select.value = '';
+        }
+
+        /**
+         * Add air conditioner from BTU selection
+         */
+        function addAirConditioner() {
+            const select = document.getElementById('acPreset');
+            const btu = parseInt(select.value);
+            if (!btu) return;
+
+            const ac = AIR_CONDITIONERS.find(a => a.btu === btu);
+            if (ac) {
+                appliances.push({
+                    id: generateId(),
+                    name: `แอร์ ${btu} BTU`,
+                    watts: ac.watts,
+                    quantity: 1,
+                    hours: 8
+                });
+                renderAppliances();
+                updateCalculation();
+            }
+            select.value = '';
+        }
+
+        /**
+         * Remove appliance from list
+         * @param {string} id - Appliance ID to remove
+         */
+        function removeAppliance(id) {
+            appliances = appliances.filter(a => a.id !== id);
+            renderAppliances();
+            updateCalculation();
+        }
+
+        /**
+         * Update appliance property
+         * @param {string} id - Appliance ID
+         * @param {string} field - Field to update (name, watts, quantity, hours)
+         * @param {any} value - New value
+         */
+        function updateAppliance(id, field, value) {
+            const app = appliances.find(a => a.id === id);
+            if (app) {
+                if (field === 'watts' || field === 'quantity' || field === 'hours') {
+                    app[field] = parseFloat(value) || 0;
+                } else {
+                    app[field] = value;
+                }
+                updateCalculation();
+            }
+        }
+
+        /**
+         * Render appliances list to DOM
+         */
+        function renderAppliances() {
+            const container = document.getElementById('appliancesList');
+            if (appliances.length === 0) {
+                container.innerHTML = '';
+                return;
+            }
+
+            container.innerHTML = appliances.map(app => `
+                <div class="appliance-item animate-in">
+                    <div class="appliance-field">
+                        <label>ชื่ออุปกรณ์</label>
+                        <input type="text" value="${app.name}" 
+                            onchange="updateAppliance('${app.id}', 'name', this.value)">
+                    </div>
+                    <div class="appliance-field">
+                        <label>กำลังไฟ (W)</label>
+                        <input type="number" value="${app.watts}" min="0" step="10"
+                            onchange="updateAppliance('${app.id}', 'watts', this.value)">
+                    </div>
+                    <div class="appliance-field">
+                        <label>จำนวน</label>
+                        <input type="number" value="${app.quantity}" min="1" step="1"
+                            onchange="updateAppliance('${app.id}', 'quantity', this.value)">
+                    </div>
+                    <div class="appliance-field">
+                        <label>ชม./วัน</label>
+                        <input type="number" value="${app.hours}" min="0" max="24" step="0.1"
+                            onchange="updateAppliance('${app.id}', 'hours', this.value)">
+                    </div>
+                    <button class="btn-icon" onclick="removeAppliance('${app.id}')">🗑️</button>
+                </div>
+            `).join('');
+        }
+
+        // ===== CALCULATION ENGINE =====
+
+        /**
+         * MAIN CALCULATION FUNCTION
+         * 
+         * This function performs all solar system calculations with detailed formulas:
+         * 
+         * STEP 1: Calculate Total Daily Energy Consumption
+         * ─────────────────────────────────────────────────
+         * Formula: Total Energy (Wh) = Σ(Watts × Quantity × Hours per day)
+         * 
+         * Example: 
+         *   - LED bulb 10W × 1 × 5 hours = 50 Wh
+         *   - Refrigerator 150W × 1 × 24 hours = 3,600 Wh
+         *   - Total = 3,650 Wh = 3.65 kWh/day
+         * 
+         * STEP 2: ON-GRID SYSTEM CALCULATION
+         * ────────────────────────────────────
+         * Formula: System Size (kW) = Daily Energy (kWh) / (Peak Sun Hours × Derating Factor)
+         * 
+         * Where:
+         *   - Peak Sun Hours: Effective hours of useful sunlight (typically 3-7 hours/day)
+         *   - Derating Factor: System efficiency accounting for losses (typically 0.6-1.0)
+         *     * Inverter losses: ~5%
+         *     * Wiring losses: ~2%
+         *     * Temperature effects: ~10%
+         *     * Dust/dirt: ~3%
+         * 
+         * Example:
+         *   - Daily energy: 10 kWh
+         *   - Peak sun hours: 5 hours
+         *   - Derating factor: 0.8
+         *   - System size = 10 / (5 × 0.8) = 10 / 4 = 2.5 kW
+         * 
+         * Number of panels = System Size × 1000 / Panel Wattage
+         *   - 2.5 kW × 1000 / 550W = 4.55 → 5 panels (rounded up)
+         * 
+         * ROI Calculation:
+         *   - Daily savings = Daily energy × Electricity rate
+         *   - Yearly savings = Daily savings × 365
+         *   - ROI (years) = Total system cost / Yearly savings
+         * 
+         * STEP 3: OFF-GRID SYSTEM CALCULATION
+         * ─────────────────────────────────────
+         * Formula: System Size (kW) = [Daily Energy × (1 + Autonomy Days)] / (Peak Sun Hours × Derating Factor)
+         * 
+         * Where:
+         *   - Autonomy Days: Number of days the system must operate without sun
+         *   - The multiplier (1 + Autonomy Days) accounts for:
+         *     * Daily consumption (1×)
+         *     * Battery charging for backup days (Autonomy Days×)
+         * 
+         * Example:
+         *   - Daily energy: 10 kWh
+         *   - Autonomy days: 2 days
+         *   - Peak sun hours: 5 hours
+         *   - Derating factor: 0.8
+         *   - System size = [10 × (1 + 2)] / (5 × 0.8) = 30 / 4 = 7.5 kW
+         * 
+         * Battery Capacity Calculation:
+         * ─────────────────────────────
+         * Formula: Battery Capacity (Wh) = [Daily Energy × Autonomy Days] / Depth of Discharge (DoD)
+         * 
+         * Where:
+         *   - Depth of Discharge: Maximum percentage of battery that can be used
+         *     * LiFePO4: 80% (can use 80% of capacity)
+         *     * Lead-Acid: 50% (can use 50% of capacity)
+         *     * Lithium-Ion: 90% (can use 90% of capacity)
+         * 
+         * Example:
+         *   - Daily energy: 10 kWh = 10,000 Wh
+         *   - Autonomy days: 2 days
+         *   - DoD: 0.8 (LiFePO4)
+         *   - Battery capacity = (10,000 × 2) / 0.8 = 20,000 / 0.8 = 25,000 Wh = 25 kWh
+         * 
+         * Number of batteries = Battery capacity / Single battery capacity
+         *   - 25 kWh / 5 kWh per unit = 5 battery units
+         */
+        function calculateSolarSystem() {
+            if (appliances.length === 0) {
+                return null;
+            }
+
+            // ===== STEP 1: Calculate Total Daily Energy Consumption =====
+            // Formula: Total Energy (Wh) = Σ(Watts × Quantity × Hours per day)
+            let totalEnergyWh = 0;
+            let totalPowerW = 0;
+
+            appliances.forEach(app => {
+                const applianceEnergy = app.watts * app.quantity * app.hours;
+                totalEnergyWh += applianceEnergy;
+                totalPowerW += app.watts * app.quantity;
+            });
+
+            const totalEnergyKWh = totalEnergyWh / 1000; // Convert Wh to kWh
+
+            // Get settings from form
+            const electricityRate = parseFloat(document.getElementById('electricityRate').value) || 4.5;
+            const peakSunHours = parseFloat(document.getElementById('peakSunHours').value) || 5;
+            const deratingFactor = parseFloat(document.getElementById('deratingFactor').value) || 0.8;
+            const autonomyDays = parseInt(document.getElementById('autonomyDays').value) || 1;
+            const batteryTypeId = document.getElementById('batteryType').value || 'lifepo4';
+
+            // Get equipment prices
+            const panelPrice = parseFloat(document.getElementById('panelPrice').value) || 2500;
+            const inverterPrice = parseFloat(document.getElementById('inverterPrice').value) || 15000;
+            const batteryPrice = parseFloat(document.getElementById('batteryPrice').value) || 55000;
+            const wiringPrice = parseFloat(document.getElementById('wiringPrice').value) || 5000;
+            const installationPrice = parseFloat(document.getElementById('installationPrice').value) || 10000;
+            const otherPrice = parseFloat(document.getElementById('otherPrice').value) || 0;
+
+            // ===== STEP 2: ON-GRID CALCULATION =====
+            // Formula: System Size (kW) = Daily Energy / (Peak Sun Hours × Derating Factor)
+            // On-Grid systems don't need battery storage because excess power is sold to the grid
+            const onGridSystemSize = totalEnergyKWh / (peakSunHours * deratingFactor);
+            const onGridPanels = Math.ceil((onGridSystemSize * 1000) / SOLAR_PANEL.watts);
+
+            // Cost breakdown for On-Grid
+            const onGridSolarPanelCost = onGridPanels * panelPrice;
+            const onGridInverterCost = inverterPrice;
+            const onGridWiringCost = wiringPrice;
+            const onGridInstallationCost = installationPrice;
+            const onGridOtherCost = otherPrice;
+            const onGridTotalCost = onGridSolarPanelCost + onGridInverterCost + onGridWiringCost + onGridInstallationCost + onGridOtherCost;
+
+            // ROI Calculation
+            // Formula: Daily savings = Daily energy × Electricity rate
+            // Formula: Yearly savings = Daily savings × 365
+            // Formula: ROI (years) = Total cost / Yearly savings
+            const dailySavings = totalEnergyKWh * electricityRate;
+            const monthlySavings = dailySavings * 30;
+            const yearlySavings = dailySavings * 365;
+            const onGridRoiYears = onGridTotalCost / yearlySavings;
+
+            // ===== STEP 3: OFF-GRID CALCULATION =====
+            // Formula: System Size (kW) = [Daily Energy × (1 + Autonomy Days)] / (Peak Sun Hours × Derating Factor)
+            // The system must generate enough power to:
+            // 1. Supply daily consumption
+            // 2. Charge batteries for autonomy days
+            const totalEnergyForOffGrid = totalEnergyKWh * (1 + autonomyDays);
+            const offGridSystemSize = totalEnergyForOffGrid / (peakSunHours * deratingFactor);
+            const offGridPanels = Math.ceil((offGridSystemSize * 1000) / SOLAR_PANEL.watts);
+
+            // Battery Calculation
+            // Formula: Battery Capacity (Wh) = [Daily Energy × Autonomy Days] / Depth of Discharge
+            const batteryType = BATTERY_TYPES.find(b => b.id === batteryTypeId) || BATTERY_TYPES[0];
+            const requiredBatteryCapacityWh = (totalEnergyWh * autonomyDays) / batteryType.dod;
+            const offGridBatteries = Math.ceil(requiredBatteryCapacityWh / batteryType.capacity);
+
+            // Cost breakdown for Off-Grid
+            const offGridSolarPanelCost = offGridPanels * panelPrice;
+            const offGridBatteryCost = offGridBatteries * batteryPrice;
+            const offGridInverterCost = inverterPrice;
+            const offGridWiringCost = wiringPrice;
+            const offGridInstallationCost = installationPrice;
+            const offGridOtherCost = otherPrice;
+            const offGridTotalCost = offGridSolarPanelCost + offGridBatteryCost + offGridInverterCost + offGridWiringCost + offGridInstallationCost + offGridOtherCost;
+
+            return {
+                totalEnergyPerDay: totalEnergyKWh,
+                totalPower: totalPowerW,
+                onGrid: {
+                    systemSize: onGridSystemSize,
+                    panels: onGridPanels,
+                    cost: onGridTotalCost,
+                    costBreakdown: {
+                        solarPanel: onGridSolarPanelCost,
+                        inverter: onGridInverterCost,
+                        battery: 0,
+                        wiring: onGridWiringCost,
+                        installation: onGridInstallationCost,
+                        other: onGridOtherCost
+                    },
+                    roiYears: onGridRoiYears,
+                    monthlySavings: monthlySavings
+                },
+                offGrid: {
+                    systemSize: offGridSystemSize,
+                    panels: offGridPanels,
+                    batteryCapacity: requiredBatteryCapacityWh / 1000,
+                    batteries: offGridBatteries,
+                    cost: offGridTotalCost,
+                    costBreakdown: {
+                        solarPanel: offGridSolarPanelCost,
+                        inverter: offGridInverterCost,
+                        battery: offGridBatteryCost,
+                        wiring: offGridWiringCost,
+                        installation: offGridInstallationCost,
+                        other: offGridOtherCost
+                    }
+                }
+            };
+        }
+
+        /**
+         * Update calculation and render results
+         */
+        function updateCalculation() {
+            const result = calculateSolarSystem();
+
+            if (!result) {
+                document.getElementById('emptyState').style.display = 'block';
+                document.getElementById('onGridResults').style.display = 'none';
+                document.getElementById('offGridResults').style.display = 'none';
+                return;
+            }
+
+            document.getElementById('emptyState').style.display = 'none';
+
+            // Update summary
+            document.getElementById('totalEnergyDisplay').textContent = formatNumber(result.totalEnergyPerDay, 2);
+            document.getElementById('totalPowerDisplay').textContent = formatNumber(result.totalPower, 0);
+
+            // Update On-Grid results
+            document.getElementById('onGridSize').textContent = formatNumber(result.onGrid.systemSize, 2);
+            document.getElementById('onGridPanels').textContent = result.onGrid.panels;
+            document.getElementById('onGridMonthlySavings').textContent = formatCurrency(result.onGrid.monthlySavings);
+            document.getElementById('onGridROI').textContent = formatNumber(result.onGrid.roiYears, 1);
+            document.getElementById('onGridCost').textContent = formatCurrency(result.onGrid.cost);
+            renderCostBreakdown('onGridBreakdown', result.onGrid.costBreakdown);
+
+            // Update Off-Grid results
+            document.getElementById('offGridSize').textContent = formatNumber(result.offGrid.systemSize, 2);
+            document.getElementById('offGridPanels').textContent = result.offGrid.panels;
+            document.getElementById('offGridBatteryCapacity').textContent = formatNumber(result.offGrid.batteryCapacity, 2);
+            document.getElementById('offGridBatteryCount').textContent = result.offGrid.batteries;
+            document.getElementById('offGridCost').textContent = formatCurrency(result.offGrid.cost);
+            renderCostBreakdown('offGridBreakdown', result.offGrid.costBreakdown);
+
+            // Show results
+            if (currentTab === 'ongrid') {
+                document.getElementById('onGridResults').style.display = 'block';
+                document.getElementById('offGridResults').style.display = 'none';
+            } else {
+                document.getElementById('onGridResults').style.display = 'none';
+                document.getElementById('offGridResults').style.display = 'block';
+            }
+        }
+
+        /**
+         * Render cost breakdown table
+         * @param {string} elementId - Target element ID
+         * @param {object} breakdown - Cost breakdown object
+         */
+        function renderCostBreakdown(elementId, breakdown) {
+            const element = document.getElementById(elementId);
+            let html = '';
+
+            if (breakdown.solarPanel > 0) {
+                html += `<div class="breakdown-item">
+                    <span class="breakdown-label">แผงโซลาร์เซลล์</span>
+                    <span class="breakdown-value">${formatCurrency(breakdown.solarPanel)}</span>
+                </div>`;
+            }
+
+            if (breakdown.inverter > 0) {
+                html += `<div class="breakdown-item">
+                    <span class="breakdown-label">อินเวอร์เตอร์</span>
+                    <span class="breakdown-value">${formatCurrency(breakdown.inverter)}</span>
+                </div>`;
+            }
+
+            if (breakdown.battery > 0) {
+                html += `<div class="breakdown-item">
+                    <span class="breakdown-label">แบตเตอรี่</span>
+                    <span class="breakdown-value">${formatCurrency(breakdown.battery)}</span>
+                </div>`;
+            }
+
+            if (breakdown.wiring > 0) {
+                html += `<div class="breakdown-item">
+                    <span class="breakdown-label">สายไฟและอุปกรณ์</span>
+                    <span class="breakdown-value">${formatCurrency(breakdown.wiring)}</span>
+                </div>`;
+            }
+
+            if (breakdown.installation > 0) {
+                html += `<div class="breakdown-item">
+                    <span class="breakdown-label">ค่าติดตั้ง</span>
+                    <span class="breakdown-value">${formatCurrency(breakdown.installation)}</span>
+                </div>`;
+            }
+
+            if (breakdown.other > 0) {
+                html += `<div class="breakdown-item">
+                    <span class="breakdown-label">อื่นๆ</span>
+                    <span class="breakdown-value">${formatCurrency(breakdown.other)}</span>
+                </div>`;
+            }
+
+            html += `<div class="breakdown-item total">
+                <span class="breakdown-label">รวมทั้งสิ้น</span>
+                <span class="breakdown-value">${formatCurrency(breakdown.total)}</span>
+            </div>`;
+
+            element.innerHTML = html;
+        }
+
+        // ===== UI INTERACTIONS =====
+
+        /**
+         * Switch between On-Grid and Off-Grid tabs
+         * @param {string} tab - Tab name ('ongrid' or 'offgrid')
+         */
+        function switchTab(tab) {
+            currentTab = tab;
+            document.querySelectorAll('.result-tab').forEach(btn => {
+                btn.classList.remove('active');
+            });
+            event.target.classList.add('active');
+
+            if (tab === 'ongrid') {
+                document.getElementById('onGridResults').style.display = 'block';
+                document.getElementById('offGridResults').style.display = 'none';
+            } else {
+                document.getElementById('onGridResults').style.display = 'none';
+                document.getElementById('offGridResults').style.display = 'block';
+            }
+        }
+
+        /**
+         * Toggle collapsible cost breakdown
+         * @param {element} element - Clicked button element
+         */
+        function toggleCollapsible(element) {
+            element.classList.toggle('active');
+            const content = element.nextElementSibling;
+            content.classList.toggle('active');
+        }
+
+        /**
+         * Reset equipment prices to default values
+         */
+        function resetPrices() {
+            document.getElementById('panelPrice').value = 2500;
+            document.getElementById('inverterPrice').value = 15000;
+            document.getElementById('batteryPrice').value = 55000;
+            document.getElementById('wiringPrice').value = 5000;
+            document.getElementById('installationPrice').value = 10000;
+            document.getElementById('otherPrice').value = 0;
+            updateCalculation();
+        }
+
+        /**
+         * Download calculation results as TXT file
+         */
+        function downloadResults() {
+            const result = calculateSolarSystem();
+            if (!result) {
+                alert('กรุณาเพิ่มรายการเครื่องใช้ไฟฟ้าก่อน');
+                return;
+            }
+
+            const timestamp = new Date().toLocaleString('th-TH');
+            const content = `
+═══════════════════════════════════════════════════════════════
+                    SOLAR CALCULATOR RESULTS
+                  เครื่องมือคำนวณระบบโซลาร์เซลล์
+═══════════════════════════════════════════════════════════════
+
+วันที่สร้างรายงาน: ${timestamp}
+
+───────────────────────────────────────────────────────────────
+📊 สรุปการใช้ไฟฟ้า
+───────────────────────────────────────────────────────────────
+การใช้ไฟรวม: ${formatNumber(result.totalEnergyPerDay, 2)} kWh/วัน
+กำลังไฟสูงสุด: ${formatNumber(result.totalPower, 0)} Watts
+
+───────────────────────────────────────────────────────────────
+☀️ ระบบ ON-GRID (เชื่อมต่อสายส่ง)
+───────────────────────────────────────────────────────────────
+ขนาดระบบ: ${formatNumber(result.onGrid.systemSize, 2)} kW
+จำนวนแผง (550W): ${result.onGrid.panels} แผง
+ประหยัดค่าไฟ/เดือน: ${formatCurrency(result.onGrid.monthlySavings)}
+จุดคุ้มทุน (ROI): ${formatNumber(result.onGrid.roiYears, 1)} ปี
+งบประมาณโดยประมาณ: ${formatCurrency(result.onGrid.cost)}
+
+รายละเอียดค่าใช้จ่าย On-Grid:
+  - แผงโซลาร์เซลล์: ${formatCurrency(result.onGrid.costBreakdown.solarPanel)}
+  - อินเวอร์เตอร์: ${formatCurrency(result.onGrid.costBreakdown.inverter)}
+  - สายไฟและอุปกรณ์: ${formatCurrency(result.onGrid.costBreakdown.wiring)}
+  - ค่าติดตั้ง: ${formatCurrency(result.onGrid.costBreakdown.installation)}
+  - อื่นๆ: ${formatCurrency(result.onGrid.costBreakdown.other)}
+
+───────────────────────────────────────────────────────────────
+🔋 ระบบ OFF-GRID (มีแบตเตอรี่)
+───────────────────────────────────────────────────────────────
+ขนาดระบบ: ${formatNumber(result.offGrid.systemSize, 2)} kW
+จำนวนแผง (550W): ${result.offGrid.panels} แผง
+ความจุแบตเตอรี่: ${formatNumber(result.offGrid.batteryCapacity, 2)} kWh (${result.offGrid.batteries} ลูก)
+งบประมาณโดยประมาณ: ${formatCurrency(result.offGrid.cost)}
+
+รายละเอียดค่าใช้จ่าย Off-Grid:
+  - แผงโซลาร์เซลล์: ${formatCurrency(result.offGrid.costBreakdown.solarPanel)}
+  - อินเวอร์เตอร์: ${formatCurrency(result.offGrid.costBreakdown.inverter)}
+  - แบตเตอรี่: ${formatCurrency(result.offGrid.costBreakdown.battery)}
+  - สายไฟและอุปกรณ์: ${formatCurrency(result.offGrid.costBreakdown.wiring)}
+  - ค่าติดตั้ง: ${formatCurrency(result.offGrid.costBreakdown.installation)}
+  - อื่นๆ: ${formatCurrency(result.offGrid.costBreakdown.other)}
+
+───────────────────────────────────────────────────────────────
+⚠️ หมายเหตุ
+───────────────────────────────────────────────────────────────
+- ผลลัพธ์เป็นการประมาณการเบื้องต้น
+- ควรปรึกษาผู้เชี่ยวชาญก่อนติดตั้งจริง
+- ราคาอุปกรณ์อาจเปลี่ยนแปลงตามตลาด
+- ประสิทธิภาพระบบขึ้นอยู่กับสภาพอากาศและการบำรุงรักษา
+
+═══════════════════════════════════════════════════════════════
+© 2025 Solar Calculator by ช่างเอกสายอาชีพ
+═══════════════════════════════════════════════════════════════
+            `;
+
+            const blob = new Blob([content], { type: 'text/plain;charset=utf-8' });
+            const link = document.createElement('a');
+            link.href = URL.createObjectURL(blob);
+            link.download = `solar-calculator-${Date.now()}.txt`;
+            link.click();
+        }
+
+        /**
+         * Copy calculation results to clipboard
+         */
+        function copyResults() {
+            const result = calculateSolarSystem();
+            if (!result) {
+                alert('กรุณาเพิ่มรายการเครื่องใช้ไฟฟ้าก่อน');
+                return;
+            }
+
+            const text = `
+Solar Calculator Results:
+
+Daily Energy: ${formatNumber(result.totalEnergyPerDay, 2)} kWh
+Max Power: ${formatNumber(result.totalPower, 0)} W
+
+ON-GRID:
+- System Size: ${formatNumber(result.onGrid.systemSize, 2)} kW
+- Panels (550W): ${result.onGrid.panels}
+- Cost: ${formatCurrency(result.onGrid.cost)}
+- ROI: ${formatNumber(result.onGrid.roiYears, 1)} years
+
+OFF-GRID:
+- System Size: ${formatNumber(result.offGrid.systemSize, 2)} kW
+- Panels (550W): ${result.offGrid.panels}
+- Battery: ${formatNumber(result.offGrid.batteryCapacity, 2)} kWh (${result.offGrid.batteries} units)
+- Cost: ${formatCurrency(result.offGrid.cost)}
+            `;
+
+            navigator.clipboard.writeText(text).then(() => {
+                alert('คัดลอกผลลัพธ์สำเร็จ!');
+            });
+        }
+
+        // ===== INITIALIZATION =====
+        document.addEventListener('DOMContentLoaded', () => {
+            initTheme();
+            updateCalculation();
+        });
+    </script>
+    <footer style="
+  margin-top:40px;
+  padding:20px;
+  text-align:center;
+  font-size:14px;
+  color:#ccc;
+  background:rgba(0,0,0,0.3);
+">
+  <hr style="border:0;border-top:1px solid #444;margin-bottom:15px;">
+
+  <strong>Solar Calculator by ช่างเอกสายอาชีพ</strong><br>
+  ช่างไฟ • โซลาร์เซลล์ • ความรู้ช่างเข้าใจง่าย<br><br>
+
+  📘 Facebook:
+  <a href="https://www.facebook.com/profile.php?id=61573048588576" target="_blank" style="color:#4da3ff;">
+    ช่างเอกสายอาชีพ
+  </a><br>
+
+  ▶️ YouTube:
+  <a href="https://www.youtube.com/@ช่างเอกสายอาชีพ" target="_blank" style="color:#ff6b6b;">
+    ช่างเอกสายอาชีพ
+  </a><br><br>
+
+  💬 Line: @changeek<br>
+  📞 โทร: 080-594-2888
+</footer>
+    <!-- trigger rebuild -->
+
+</body>
+</html>
